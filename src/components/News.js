@@ -15,7 +15,7 @@ export default function News({
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
 
-  const apiKey = "235c981a011048c3a3fe8a05bfc90cd7";
+  const apiKey = process.env.REACT_APP_API_URL;
 
   //  Set document title
   useEffect(() => {
