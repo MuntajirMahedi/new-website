@@ -1,4 +1,6 @@
 import React from "react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 export default function NewsItem({
   title,
@@ -22,10 +24,13 @@ export default function NewsItem({
           {source}
         </span>
 
-        <img src={imageUrl || fallbackImage} onError={(e) => { e.target.onerror = null; e.target.src = fallbackImage;}}
-          className="card-img-top"
-          alt={title}
-        />
+        <LazyLoadImage
+  src={imageUrl || fallbackImage}
+  onError={(e) => (e.target.src = fallbackImage)}
+  alt={title}
+  className="card-img-top"
+  effect="blur"
+/>
 
         <div className="card-body">
           <h5 className="card-title">{title}...</h5>

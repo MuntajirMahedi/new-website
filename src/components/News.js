@@ -17,12 +17,12 @@ export default function News({
 
   const apiKey = process.env.REACT_APP_API_URL;
 
-  //  Set document title
+  // 📰 Set document title dynamically
   useEffect(() => {
     document.title = `${category.charAt(0).toUpperCase() + category.slice(1)} - News`;
   }, [category]);
 
-  //  Initial Fetch
+  // 🔹 Fetch first page only once
   const fetchInitialNews = useCallback(async () => {
     setProgress(20);
     setLoading(true);
@@ -32,6 +32,7 @@ export default function News({
       const response = await fetch(proxyUrl);
       setProgress(50);
       const parsedData = await response.json();
+
       setArticles(parsedData.articles || []);
       setTotalResults(parsedData.totalResults || 0);
       setProgress(100);
@@ -45,12 +46,16 @@ export default function News({
     }
   }, [country, category, pageSize, apiKey, setProgress]);
 
+  // 🧩 Run only when category or country changes
   useEffect(() => {
     fetchInitialNews();
   }, [fetchInitialNews]);
 
-  // Load More
+  // 🔁 Load More - Infinite Scroll
   const fetchMoreData = async () => {
+    // ✅ Prevent unnecessary fetch when all articles are loaded
+    if (articles.length >= totalResults) return;
+
     const nextPage = page + 1;
     setProgress(30);
     try {
@@ -64,8 +69,14 @@ export default function News({
         ...prevArticles,
         ...(parsedData.articles || []),
       ]);
+
       setPage(nextPage);
-      setTotalResults(parsedData.totalResults || totalResults);
+
+      // ✅ Keep old totalResults if new one is invalid
+      if (parsedData.totalResults && parsedData.totalResults > 0) {
+        setTotalResults(parsedData.totalResults);
+      }
+
       setProgress(100);
     } catch (error) {
       console.error("Fetch more error:", error);
@@ -75,7 +86,7 @@ export default function News({
 
   return (
     <div className="container my-3">
-      <h2 className="mb-4 text-center" style={{ marginTop: '90px' }}>
+      <h2 className="mb-4 text-center" style={{ marginTop: "90px" }}>
         News - Top {category.charAt(0).toUpperCase() + category.slice(1)} Headlines
       </h2>
 
@@ -85,11 +96,11 @@ export default function News({
         <InfiniteScroll
           dataLength={articles.length}
           next={fetchMoreData}
-          hasMore={articles.length < totalResults}
+          hasMore={articles.length < totalResults && !loading}
           loader={<Spinner />}
           endMessage={
             <p className="text-center text-muted my-3">
-              <b>Yay! You have seen it all </b>
+              <b>Yay! You have seen it all 🎉</b>
             </p>
           }
         >
