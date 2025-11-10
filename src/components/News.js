@@ -75,7 +75,7 @@ export default function News({
 
   return (
     <div className="container my-3">
-      <h2 className="mb-4 text-center">
+      <h2 className="mb-4 text-center" style={{ marginTop: '90px' }}>
         News - Top {category.charAt(0).toUpperCase() + category.slice(1)} Headlines
       </h2>
 
